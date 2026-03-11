@@ -8,22 +8,37 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // USING DUMMYJSON API - Reliable and works on Netlify
-    fetch("https://dummyjson.com/recipes?limit=20")
+    // 1. We use the FruityVice API (Fruits only)
+    // 2. We wrap it in 'allorigins' proxy so it works on Netlify
+    const apiUrl = "https://api.allorigins.win/raw?url=https://www.fruityvice.com/api/fruit/all";
+
+    fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
-        // We map the recipe data to look like fruits for your store
-        const formatted = data.recipes.map((item, index) => ({
+        const formatted = data.map((fruit, index) => ({
           id: index + 1,
-          name: item.name, // Using recipe name
-          price: Math.floor(Math.random() * 200) + 40, // Random price
-          image: item.image // Using recipe image (bonus!)
+          name: fruit.name,
+          price: Math.floor(Math.random() * 200) + 40,
         }));
         setFruits(formatted);
         setLoading(false);
       })
       .catch((error) => {
-        console.log("Error fetching data:", error);
+        console.log("API Error, using backup fruits:", error);
+        // BACKUP PLAN: If API fails, load these fruits so site is never empty
+        const backupFruits = [
+          { id: 1, name: "Apple", price: 120 },
+          { id: 2, name: "Banana", price: 50 },
+          { id: 3, name: "Orange", price: 80 },
+          { id: 4, name: "Mango", price: 150 },
+          { id: 5, name: "Grapes", price: 90 },
+          { id: 6, name: "Pineapple", price: 100 },
+          { id: 7, name: "Strawberry", price: 200 },
+          { id: 8, name: "Watermelon", price: 60 },
+          { id: 9, name: "Papaya", price: 40 },
+          { id: 10, name: "Pomegranate", price: 180 },
+        ];
+        setFruits(backupFruits);
         setLoading(false);
       });
   }, []);
@@ -61,19 +76,19 @@ function App() {
   if (loading) {
     return (
       <div className="container">
-        <h1>🍎 Online Store</h1>
-        <p>Loading items...</p>
+        <h1>🍎 Online Fruit Store</h1>
+        <p>Loading fruits...</p>
       </div>
     );
   }
 
   return (
     <div className="container">
-      <h1>🍎 Online Store</h1>
+      <h1>🍎 Online Fruit Store</h1>
 
       <input
         type="text"
-        placeholder="Search items..."
+        placeholder="Search fruits..."
         className="search"
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -81,12 +96,6 @@ function App() {
       <div className="fruit-list">
         {filteredFruits.map((fruit) => (
           <div key={fruit.id} className="fruit-card">
-            {/* Displaying the image from the new API */}
-            <img 
-              src={fruit.image} 
-              alt={fruit.name} 
-              style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px" }} 
-            />
             <h3>{fruit.name}</h3>
             <p>Price: ₹{fruit.price} / kg</p>
 
@@ -111,7 +120,10 @@ function App() {
           <p>{item.kg} kg</p>
           <p>₹{item.total}</p>
 
-          <button className="remove-btn" onClick={() => removeFromCart(index)}>
+          <button
+            className="remove-btn"
+            onClick={() => removeFromCart(index)}
+          >
             Remove
           </button>
         </div>

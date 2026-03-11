@@ -8,37 +8,15 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. We use the FruityVice API (Fruits only)
-    // 2. We wrap it in 'allorigins' proxy so it works on Netlify
-    const apiUrl = "https://api.allorigins.win/raw?url=https://www.fruityvice.com/api/fruit/all";
-
-    fetch(apiUrl)
+    // Fetching from our reliable local "Fruit API"
+    fetch("./fruits.json")
       .then((res) => res.json())
       .then((data) => {
-        const formatted = data.map((fruit, index) => ({
-          id: index + 1,
-          name: fruit.name,
-          price: Math.floor(Math.random() * 200) + 40,
-        }));
-        setFruits(formatted);
+        setFruits(data);
         setLoading(false);
       })
       .catch((error) => {
-        console.log("API Error, using backup fruits:", error);
-        // BACKUP PLAN: If API fails, load these fruits so site is never empty
-        const backupFruits = [
-          { id: 1, name: "Apple", price: 120 },
-          { id: 2, name: "Banana", price: 50 },
-          { id: 3, name: "Orange", price: 80 },
-          { id: 4, name: "Mango", price: 150 },
-          { id: 5, name: "Grapes", price: 90 },
-          { id: 6, name: "Pineapple", price: 100 },
-          { id: 7, name: "Strawberry", price: 200 },
-          { id: 8, name: "Watermelon", price: 60 },
-          { id: 9, name: "Papaya", price: 40 },
-          { id: 10, name: "Pomegranate", price: 180 },
-        ];
-        setFruits(backupFruits);
+        console.log("Error:", error);
         setLoading(false);
       });
   }, []);
@@ -54,10 +32,12 @@ function App() {
   const addToCart = (fruit) => {
     const quantity = kg[fruit.id] || 1;
     const item = {
+      id: fruit.id,
       name: fruit.name,
       price: fruit.price,
       kg: quantity,
       total: fruit.price * quantity,
+      image: fruit.image
     };
     setCart([...cart, item]);
   };
@@ -77,7 +57,7 @@ function App() {
     return (
       <div className="container">
         <h1>🍎 Online Fruit Store</h1>
-        <p>Loading fruits...</p>
+        <p>Loading fresh fruits...</p>
       </div>
     );
   }
@@ -96,6 +76,12 @@ function App() {
       <div className="fruit-list">
         {filteredFruits.map((fruit) => (
           <div key={fruit.id} className="fruit-card">
+            {/* Fruit Image */}
+            <img 
+              src={fruit.image} 
+              alt={fruit.name} 
+              style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "50%", marginBottom: "10px" }} 
+            />
             <h3>{fruit.name}</h3>
             <p>Price: ₹{fruit.price} / kg</p>
 
@@ -114,9 +100,11 @@ function App() {
 
       <h2>🛒 Cart</h2>
 
+      {cart.length === 0 && <p>Your cart is empty.</p>}
+
       {cart.map((item, index) => (
         <div key={index} className="cart-item">
-          <p>{item.name}</p>
+          <p><strong>{item.name}</strong></p>
           <p>{item.kg} kg</p>
           <p>₹{item.total}</p>
 

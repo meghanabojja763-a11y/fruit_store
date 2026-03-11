@@ -1,13 +1,108 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body{
+font-family: Arial, Helvetica, sans-serif;
+background:#f5f5f5;
+margin:0;
+padding:0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.container{
+width:90%;
+margin:auto;
+text-align:center;
+padding:20px;
+}
+
+h1{
+color:#2e7d32;
+margin-bottom:10px;
+}
+
+.search{
+padding:10px;
+width:250px;
+border-radius:5px;
+border:1px solid gray;
+margin:20px;
+}
+
+.fruit-list{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+justify-content:center;
+}
+
+.fruit-card{
+background:white;
+padding:20px;
+width:180px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+.fruit-card h3{
+margin-bottom:5px;
+}
+
+.kg-input{
+width:70px;
+padding:5px;
+margin:10px;
+border-radius:4px;
+border:1px solid gray;
+}
+
+button{
+background:#2e7d32;
+color:white;
+border:none;
+padding:10px;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1b5e20;
+}
+
+.cart-item{
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:white;
+margin:10px auto;
+padding:10px;
+width:350px;
+border-radius:5px;
+box-shadow:0 0 5px gray;
+}
+
+.cart-item p{
+margin:0 5px;
+}
+
+.pay-btn{
+margin-top:20px;
+padding:12px 25px;
+font-size:18px;
+background:#ff6f00;
+}
+
+.pay-btn:hover{
+background:#e65100;
+}
+
+/* REMOVE BUTTON STYLE */
+
+.remove-btn{
+background:#d32f2f;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:5px;
+cursor:pointer;
+}
+
+.remove-btn:hover{
+background:#b71c1c;
 }

@@ -5,23 +5,26 @@ function App() {
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
   const [kg, setKg] = useState({});
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://corsproxy.io/?https://www.fruityvice.com/api/fruit/all")
+    // USING DUMMYJSON API - Reliable and works on Netlify
+    fetch("https://dummyjson.com/recipes?limit=20")
       .then((res) => res.json())
       .then((data) => {
-        const formatted = data.map((fruit, index) => ({
+        // We map the recipe data to look like fruits for your store
+        const formatted = data.recipes.map((item, index) => ({
           id: index + 1,
-          name: fruit.name,
-          price: Math.floor(Math.random() * 200) + 40,
+          name: item.name, // Using recipe name
+          price: Math.floor(Math.random() * 200) + 40, // Random price
+          image: item.image // Using recipe image (bonus!)
         }));
         setFruits(formatted);
-        setLoading(false); // Stop loading when data arrives
+        setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
-        setLoading(false); // Stop loading even if there is an error
+        console.log("Error fetching data:", error);
+        setLoading(false);
       });
   }, []);
 
@@ -55,23 +58,22 @@ function App() {
     alert("Payment Successful! Total Paid: ₹" + totalAmount);
   };
 
-  // Added a loading check for better user experience
   if (loading) {
     return (
       <div className="container">
-        <h1>🍎 Online Fruit Store</h1>
-        <p>Loading fruits...</p>
+        <h1>🍎 Online Store</h1>
+        <p>Loading items...</p>
       </div>
     );
   }
 
   return (
     <div className="container">
-      <h1>🍎 Online Fruit Store</h1>
+      <h1>🍎 Online Store</h1>
 
       <input
         type="text"
-        placeholder="Search fruits..."
+        placeholder="Search items..."
         className="search"
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -79,6 +81,12 @@ function App() {
       <div className="fruit-list">
         {filteredFruits.map((fruit) => (
           <div key={fruit.id} className="fruit-card">
+            {/* Displaying the image from the new API */}
+            <img 
+              src={fruit.image} 
+              alt={fruit.name} 
+              style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px" }} 
+            />
             <h3>{fruit.name}</h3>
             <p>Price: ₹{fruit.price} / kg</p>
 
@@ -97,18 +105,13 @@ function App() {
 
       <h2>🛒 Cart</h2>
 
-      {cart.length === 0 ? <p>Your cart is empty.</p> : null}
-
       {cart.map((item, index) => (
         <div key={index} className="cart-item">
           <p>{item.name}</p>
           <p>{item.kg} kg</p>
           <p>₹{item.total}</p>
 
-          <button
-            className="remove-btn"
-            onClick={() => removeFromCart(index)}
-          >
+          <button className="remove-btn" onClick={() => removeFromCart(index)}>
             Remove
           </button>
         </div>
